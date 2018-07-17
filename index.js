@@ -51,7 +51,7 @@ wsServer.on('request', function(request) {
           robot = null;
       });
     } else {
-      var ui = request.accept('ui', request.origin);
+      ui = request.accept('ui', request.origin);
       console.log((new Date()) + ' Connection accepted.');
       ui.on('message', function(message) {
         if (robot != null) {
@@ -60,7 +60,7 @@ wsServer.on('request', function(request) {
       });
 
       ui.on('close', function(reasonCode, description) {
-          console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+          console.log((new Date()) + ' Peer ' + ui.remoteAddress + ' disconnected.');
           ui = null;
       });
     }
