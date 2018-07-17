@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <title>Robot</title>
+
+  </head>
+
+  <body>
+    <button onclick="cmd('FORWARD')">forward</button>
+    <button onclick="cmd('STOP')">stop</button>
+    <button onclick="cmd('BACKWARD')">backward</button>
+
+    <button onclick="cmd('LEFT')">left</button>
+    <button onclick="cmd('RIGHT')">right</button>
+
+
+    <script>
+      var socket = new WebSocket("ws://localhost:8083", "ui");
+
+      function cmd(action) {
+        socket.send(action)
+      }
+    </script>
+  </body>
+
+</html>
