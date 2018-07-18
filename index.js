@@ -2,6 +2,14 @@
 var WebSocketServer = require('websocket').server;
 var http = require('http');
 
+var redis = require("redis");
+var client = redis.createClient({
+  host:"redis-18915.c10.us-east-1-2.ec2.cloud.redislabs.com",
+  port:"18915",
+  password:"robot"
+});
+
+
 var server = http.createServer(function(request, response) {
     console.log((new Date()) + ' Received request for ' + request.url);
     response.writeHead(404);
@@ -26,7 +34,6 @@ function originIsAllowed(origin) {
   return true;
 }
 
-var robot = null
 var ui = null
 
 wsServer.on('request', function(request) {
@@ -37,26 +44,11 @@ wsServer.on('request', function(request) {
       return;
     }
 
-    if (request.requestedProtocols[0] == "robot") {
-      robot = request.accept('robot', request.origin);
-      console.log((new Date()) + ' Connection accepted.');
-      robot.on('message', function(message) {
-        if (ui != null) {
-            ui.sendUTF(message.utf8Data);
-        }
-      });
-
-      robot.on('close', function(reasonCode, description) {
-          console.log((new Date()) + ' Peer ' + robot.remoteAddress + ' disconnected.');
-          robot = null;
-      });
-    } else {
+    if (request.requestedProtocols[0] == "ui") {
       ui = request.accept('ui', request.origin);
       console.log((new Date()) + ' Connection accepted.');
       ui.on('message', function(message) {
-        if (robot != null) {
-          robot.sendUTF(message.utf8Data);
-        }
+          client.set("FromUI",message.utf8Data);
       });
 
       ui.on('close', function(reasonCode, description) {

@@ -12,10 +12,25 @@
     <button onclick="cmd('LEFT')">left</button>
     <button onclick="cmd('RIGHT')">right</button>
 
-
+    <h2>From Robot:</h2>
+    <div id="udoo">
+    </div>
+    <div id="arduino">
+    </div>
     <script>
       var socket = new WebSocket("ws://localhost:8083", "ui");
+      var udoo = document.getElementById("udoo")
+      var arduino = document.getElementById("arduino")
+      socket.onmessage = function(event) {
+        if (event.data.indexOf("Udoo") > 0) {
+          udoo.innerHTML = event.data
+        }
 
+        if (event.data.indexOf("Arduino") > 0) {
+          arduino.innerHTML = event.data
+        }
+
+      }
       function cmd(action) {
         socket.send(action)
       }
